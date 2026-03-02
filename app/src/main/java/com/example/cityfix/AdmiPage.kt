@@ -22,6 +22,7 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -35,7 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.wear.compose.navigation.currentBackStackEntryAsState
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.cityfix.ui.theme.Grid
 import com.example.cityfix.ui.theme.GridConfig
 import com.example.cityfix.ui.theme.MainBG
@@ -50,10 +51,17 @@ data class DashboardItem(
 )
 
 @Composable
-fun AdminPage(navController: NavController) {
-    // This line "listens" to where the user is in the app
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
+fun AdminPage(navController: NavController?) {
+
+    // 1. Check if we are in the Preview window
+    val isPreview = androidx.compose.ui.platform.LocalInspectionMode.current
+
+    // 2. Only "listen" to the backstack if we are NOT in the preview
+    val currentRoute = if (isPreview) {
+        "admin" // Default for preview
+    } else {
+        navController?.currentBackStackEntryAsState()?.value?.destination?.route
+    }
 
 //    val context = LocalContext.current
 //    val launcher = rememberLauncherForActivityResult(
@@ -156,10 +164,12 @@ fun AdminPage(navController: NavController) {
     }
 }
 
-
 @Preview(showBackground = true, name = "Admin Page")
 @Composable
 fun PreviewAdmin(){
-    val navController = androidx.navigation.compose.rememberNavController()
-    AdminPage(navController = navController)
+    MaterialTheme { // Wrap in Theme
+        Surface {   // Wrap in Surface
+            AdminPage(navController = null)
+        }
+    }
 }
