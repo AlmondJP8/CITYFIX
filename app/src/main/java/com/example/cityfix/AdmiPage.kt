@@ -167,9 +167,5 @@ fun AdminPage(navController: NavController?) {
 @Preview(showBackground = true, name = "Admin Page")
 @Composable
 fun PreviewAdmin(){
-    MaterialTheme { // Wrap in Theme
-        Surface {   // Wrap in Surface
             AdminPage(navController = null)
         }
-    }
-}

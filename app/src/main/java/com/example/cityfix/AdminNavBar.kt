@@ -2,7 +2,6 @@ package com.example.cityfix
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -87,7 +86,7 @@ fun AdminBottomBar(navController: NavController?, currentRoute: String?) {
                 label = { Text("Map", fontSize = 14.sp) },
                 icon = {
                     Icon(
-                        painter = painterResource(id = R.drawable.pic_map),
+                        painter = painterResource(id = R.drawable.pic_maps),
                         contentDescription = "Map",
                         modifier = Modifier.size(25.dp)
                     )
