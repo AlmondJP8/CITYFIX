@@ -1,4 +1,4 @@
-package com.example.cityfix
+package com.example.cityfix.uiComponents
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
@@ -11,6 +11,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.cityfix.R
 
 @Composable
 fun AdminBottomBar(navController: NavController?, currentRoute: String?) {

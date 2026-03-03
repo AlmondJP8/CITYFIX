@@ -25,6 +25,8 @@ import androidx.compose.foundation.clickable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.cityfix.pages.AdminPage
+import com.example.cityfix.pages.LoginScreen
 import com.example.cityfix.ui.theme.AppStrings
 import com.example.cityfix.ui.theme.ButtonText
 import com.example.cityfix.ui.theme.CITYFIXTheme

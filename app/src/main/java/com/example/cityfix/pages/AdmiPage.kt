@@ -1,8 +1,5 @@
-package com.example.cityfix
+package com.example.cityfix.pages
 
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,33 +12,30 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.cityfix.ui.theme.Grid
+import com.example.cityfix.R
 import com.example.cityfix.ui.theme.GridConfig
 import com.example.cityfix.ui.theme.MainBG
 import com.example.cityfix.ui.theme.appName
 import com.example.cityfix.ui.theme.gridText
+import com.example.cityfix.uiComponents.AdminBottomBar
 
 data class DashboardItem(
     val title: String,
@@ -54,7 +48,7 @@ data class DashboardItem(
 fun AdminPage(navController: NavController?) {
 
     // 1. Check if we are in the Preview window
-    val isPreview = androidx.compose.ui.platform.LocalInspectionMode.current
+    val isPreview = LocalInspectionMode.current
 
     // 2. Only "listen" to the backstack if we are NOT in the preview
     val currentRoute = if (isPreview) {
