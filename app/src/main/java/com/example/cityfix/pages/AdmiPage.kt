@@ -1,5 +1,6 @@
 package com.example.cityfix.pages
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -46,10 +47,8 @@ data class DashboardItem(
 
 @Composable
 fun AdminPage(navController: NavController?) {
-
     // 1. Check if we are in the Preview window
     val isPreview = LocalInspectionMode.current
-
     // 2. Only "listen" to the backstack if we are NOT in the preview
     val currentRoute = if (isPreview) {
         "admin" // Default for preview
@@ -124,10 +123,9 @@ fun AdminPage(navController: NavController?) {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(110.dp), // Increased height slightly to prevent text cutoff
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color.White // Keeps the card clean
-                        ),
+                            .height(110.dp)
+                            .clickable{(navController?.navigate(item.route))}, // Increased height slightly to prevent text cutoff
+                        colors = CardDefaults.cardColors(containerColor = Color.White),
                         elevation = CardDefaults.cardElevation(2.dp)
                     ) {
                         // Use fillMaxSize so the Box centers content inside the Card
