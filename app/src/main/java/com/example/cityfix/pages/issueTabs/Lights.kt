@@ -6,18 +6,19 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Lights(navController: NavController) { // <-- Change this name for Water, Lights, etc.
+fun Lights(navController: NavController?) { // <-- Change this name for Water, Lights, etc.
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Power Issues") }, // <-- Change title per screen
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = { navController?.popBackStack() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 }
@@ -29,4 +30,10 @@ fun Lights(navController: NavController) { // <-- Change this name for Water, Li
             // Your form or list goes here
         }
     }
+}
+
+@Preview(showBackground = true, name = "Lights Screen")
+@Composable
+fun LightsPreview(){
+    Lights(navController = null)
 }
