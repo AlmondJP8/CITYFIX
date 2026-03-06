@@ -1,26 +1,42 @@
 package com.example.cityfix.pages
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.cityfix.R
 
 import com.example.cityfix.ui.theme.MainBG
 
 @Composable
 fun SignUpScreen(navController: NavController? = null) { // 1. Pass the NavController here
-    Box(modifier = Modifier
+    Column (modifier = Modifier
         .MainBG(),
-        contentAlignment = Alignment.Center)
+        horizontalAlignment = Alignment.CenterHorizontally)
     {
+
+        Spacer(modifier = Modifier.weight(0.1f))
+
+        Image(
+            painter = painterResource(id = R.drawable.pic_user),
+            contentDescription = "Logo",
+            modifier = Modifier .size(100.dp) .clip(CircleShape)
+        )
+
+        Spacer(modifier = Modifier.weight(0.01f))
+
         ElevatedCard(
             shape = RoundedCornerShape(28.dp),
             modifier = Modifier.fillMaxWidth(0.85f),
@@ -97,11 +113,9 @@ fun SignUpScreen(navController: NavController? = null) { // 1. Pass the NavContr
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Text("Already have an Account? Log In")
-
-
-
             }
         }
+        Spacer(modifier = Modifier.weight(0.1f))
     }
 }
 

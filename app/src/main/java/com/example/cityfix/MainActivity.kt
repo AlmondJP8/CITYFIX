@@ -21,7 +21,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 
 // Import your pages (Ensure these paths match your folder structure)
-import com.example.cityfix.pages.AdminPage.AdminPage
+import com.example.cityfix.pages.AdminPage.DashBoard
+import com.example.cityfix.pages.AdminPage.ReportsPage
 import com.example.cityfix.pages.AdminPage.issueTabs.Hazards
 import com.example.cityfix.pages.AdminPage.issueTabs.Lights
 import com.example.cityfix.pages.AdminPage.issueTabs.Power
@@ -30,6 +31,7 @@ import com.example.cityfix.pages.AdminPage.issueTabs.Trees
 import com.example.cityfix.pages.AdminPage.issueTabs.Waste
 import com.example.cityfix.pages.AdminPage.issueTabs.Water
 import com.example.cityfix.pages.LoginScreen
+import com.example.cityfix.pages.SignUpScreen
 
 import com.example.cityfix.ui.theme.*
 
@@ -43,20 +45,24 @@ class MainActivity : ComponentActivity() {
             CITYFIXTheme(darkTheme = false) {
                 val navController = rememberNavController()
 
-                NavHost(navController = navController, startDestination = "home") {
+                NavHost(navController = navController, startDestination = "start") {
                     // Main App Routes
-                    composable("home") { Greeting(navController) }
-                    composable("login") { LoginScreen(navController) }
-                    composable("admin") { AdminPage(navController) }
+                    composable("start") {Greeting(navController)}
+                    composable("login") {LoginScreen(navController)}
+                    composable("signup"){SignUpScreen(navController)}
 
-                    // Category Routes (Make sure these functions exist in your .kt files!)
-                    composable("power") { Power(navController) }
-                    composable("water") { Water(navController) }
-                    composable("lights") { Lights(navController) }
-                    composable("road") { Streets(navController) }
-                    composable("hazards") { Hazards(navController) }
-                    composable("trees") { Trees(navController) }
-                    composable("waste") { Waste(navController) }
+                    //For admin page
+                    composable("admin") { DashBoard(navController) }
+                    composable("reports"){ReportsPage(navController)}
+
+                    // Category Routes for admin
+                    composable("power") {Power(navController)}
+                    composable("water") {Water(navController)}
+                    composable("lights") {Lights(navController)}
+                    composable("road") {Streets(navController)}
+                    composable("hazards") {Hazards(navController)}
+                    composable("trees") {Trees(navController)}
+                    composable("waste") {Waste(navController)}
                 }
             }
         }
@@ -76,7 +82,10 @@ fun Greeting(navController: androidx.navigation.NavController) {
                     contentDescription = "User",
                     modifier = Modifier.Logo()
                 )
-                Text(text = AppStrings.APP_NAME, style = appName)
+                Text(text = AppStrings.APP_NAME,
+                    style = appName,
+                    modifier = Modifier.clickable{navController.navigate("signup")}
+                )
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
                     text = AppStrings.LOGIN_BUTTON,

@@ -54,8 +54,7 @@ fun AdminBottomBar(navController: NavController?, currentRoute: String?) {
                 icon = { Icon(painterResource(id = R.drawable.pic_dashboard),
                     contentDescription = "Dashboard",
                     modifier = Modifier.size(25.dp))},
-
-                colors = itemColors
+                    colors = itemColors
             )
 
             // USERS ITEM
@@ -64,14 +63,16 @@ fun AdminBottomBar(navController: NavController?, currentRoute: String?) {
             onClick = {
                 // This will work once you create a "users" screen
                 if (currentRoute != "reports") {
-                    navController?.navigate("reports")
+                    navController?.navigate("reports"){
+                        popUpTo("reports") { saveState = true}
+                        launchSingleTop = true
+                    }
                 }
             },
             label = { Text("Reports", fontSize = 14.sp) },
             icon = { Icon(painterResource(id = R.drawable.pic_ticket),
                 contentDescription = "Reports",
                 modifier = Modifier.size(25.dp))},
-
                 colors = itemColors
             )
 
@@ -81,7 +82,7 @@ fun AdminBottomBar(navController: NavController?, currentRoute: String?) {
                 onClick = {
                     if (currentRoute != "map") {
                         navController?.navigate("map") {
-                            popUpTo("admin") { saveState = true }
+                            popUpTo("map") { saveState = true }
                             launchSingleTop = true
                         }
                     }
@@ -91,27 +92,25 @@ fun AdminBottomBar(navController: NavController?, currentRoute: String?) {
                     Icon(
                         painter = painterResource(id = R.drawable.pic_maps),
                         contentDescription = "Map",
-                        modifier = Modifier.size(25.dp)
-                    )
-                },
-                colors = itemColors
+                        modifier = Modifier.size(25.dp))},
+                        colors = itemColors
             )
 
             // EXIT ITEM
             NavigationBarItem(
-                selected = false,
+                selected = currentRoute == "setting",
                 onClick = {
                     // Clears the admin stack and goes back to the home/greeting screen
-                    navController?.navigate("home") {
-                        popUpTo("admin") { inclusive = true }
+                    navController?.navigate("setting") {
+                        popUpTo("setting") { inclusive = true }
+                        launchSingleTop = true
                     }
                 },
                 label = { Text("Settings", fontSize = 14.sp)},
                 icon = { Icon(painterResource(id = R.drawable.pic_cog1),
                     contentDescription = "Setting",
                     modifier = Modifier.size(25.dp))},
-
-                colors = itemColors
+                    colors = itemColors
             )
         }
     }
