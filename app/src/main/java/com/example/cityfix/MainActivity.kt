@@ -30,8 +30,6 @@ import com.example.cityfix.pages.AdminPage.issueTabs.Streets
 import com.example.cityfix.pages.AdminPage.issueTabs.Trees
 import com.example.cityfix.pages.AdminPage.issueTabs.Waste
 import com.example.cityfix.pages.AdminPage.issueTabs.Water
-import com.example.cityfix.pages.LoginScreen
-import com.example.cityfix.pages.SignUpScreen
 
 import com.example.cityfix.ui.theme.*
 

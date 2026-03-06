@@ -1,4 +1,4 @@
-package com.example.cityfix.pages
+package com.example.cityfix
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -16,8 +16,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.cityfix.R
-import com.example.cityfix.ui.theme.Logo
 
 import com.example.cityfix.ui.theme.MainBG
 
