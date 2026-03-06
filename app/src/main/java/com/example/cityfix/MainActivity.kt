@@ -21,9 +21,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 
 // Import your pages (Ensure these paths match your folder structure)
-import com.example.cityfix.pages.AdminPage
+import com.example.cityfix.pages.AdminPage.AdminPage
+import com.example.cityfix.pages.AdminPage.issueTabs.Hazards
+import com.example.cityfix.pages.AdminPage.issueTabs.Lights
+import com.example.cityfix.pages.AdminPage.issueTabs.Power
+import com.example.cityfix.pages.AdminPage.issueTabs.Streets
+import com.example.cityfix.pages.AdminPage.issueTabs.Trees
+import com.example.cityfix.pages.AdminPage.issueTabs.Waste
+import com.example.cityfix.pages.AdminPage.issueTabs.Water
 import com.example.cityfix.pages.LoginScreen
-import com.example.cityfix.pages.issueTabs.*
 
 import com.example.cityfix.ui.theme.*
 

@@ -1,8 +1,10 @@
 package com.example.cityfix.uiComponents
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -32,7 +34,7 @@ fun AdminBottomBar(navController: NavController?, currentRoute: String?) {
         )
 
         NavigationBar(
-            modifier = Modifier.height(90.dp), // Slimmer, professional height
+            modifier = Modifier.height(90.dp),
             containerColor = Color.White,       // Forces white background
             tonalElevation = 0.dp               // Removes the Material 3 gray/purple tint
         ) {
@@ -104,9 +106,9 @@ fun AdminBottomBar(navController: NavController?, currentRoute: String?) {
                         popUpTo("admin") { inclusive = true }
                     }
                 },
-                label = { Text("Exit", fontSize = 14.sp)},
+                label = { Text("Settings", fontSize = 14.sp)},
                 icon = { Icon(painterResource(id = R.drawable.pic_cog1),
-                    contentDescription = "Exit",
+                    contentDescription = "Setting",
                     modifier = Modifier.size(25.dp))},
 
                 colors = itemColors

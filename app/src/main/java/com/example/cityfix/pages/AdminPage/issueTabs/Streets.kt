@@ -1,4 +1,4 @@
-package com.example.cityfix.pages.issueTabs
+package com.example.cityfix.pages.AdminPage.issueTabs
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons

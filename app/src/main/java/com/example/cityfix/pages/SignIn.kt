@@ -37,7 +37,7 @@ fun LoginScreen(navController: NavController? = null) { // 1. Pass the NavContro
                         color = Color(0xFF1976D2)
                     )
 
-                    Text(text = "Sign in to continue", color = Color.Gray)
+                    Text(text = "Log in to continue", color = Color.Gray)
 
                     Spacer(modifier = Modifier.height(24.dp))
 
@@ -62,7 +62,7 @@ fun LoginScreen(navController: NavController? = null) { // 1. Pass the NavContro
                     // 2. The Main Button: Now connected to Navigation
                     Button(onClick = {
                             // Navigate only if the controller isn't null
-                            navController?.navigate("adminpage")
+                            navController?.navigate("admin")
                         },
                         modifier = Modifier
                             .fillMaxWidth()
