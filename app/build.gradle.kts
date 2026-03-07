@@ -47,6 +47,7 @@ android {
 
 dependencies {
     implementation("androidx.navigation:navigation-compose:2.8.0")
+    implementation("org.osmdroid:osmdroid-android:6.1.18")
     implementation("com.google.accompanist:accompanist-permissions:0.34.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

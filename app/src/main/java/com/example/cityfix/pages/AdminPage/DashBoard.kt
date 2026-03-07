@@ -49,11 +49,9 @@ import com.example.cityfix.ui.theme.headertext
 import com.example.cityfix.uiComponents.AdminBottomBar
 import com.example.cityfix.uiComponents.AdminHeader
 
-data class DashboardItem(
+data class Dashboard(
     val title: String,
-    val iconRes: Int,
-    val route: String,
-    val color: Color
+    val number: String,
 )
 
 @Composable
@@ -69,13 +67,9 @@ fun DashBoard(navController: NavController?) {
 
     val dashboardItems = remember {
         listOf(
-            DashboardItem("Power", R.drawable.pic_bolt, "power", Color(0xFFFFB300)),
-            DashboardItem("Water", R.drawable.pic_water, "water", Color(0xFF0288D1)),
-            DashboardItem("Lights", R.drawable.pic_light, "lights", Color(0xFFFBC02D)),
-            DashboardItem("Streets", R.drawable.pic_road, "road", Color(0xFF455A64)),
-            DashboardItem("Hazards", R.drawable.pic_hazard, "hazards", Color(0xFFE64A19)),
-            DashboardItem("Trees", R.drawable.pic_trees, "trees", Color(0xFF388E3C)),
-            DashboardItem("Waste", R.drawable.pic_trash, "waste", Color(0xFF8D6E63))
+            Dashboard("Total Issue", "125"),
+            Dashboard("New Issue", "10"),
+            Dashboard("Issue Fixed", "20"),
         )
     }
 
@@ -100,41 +94,31 @@ fun DashBoard(navController: NavController?) {
             ) {
                 Spacer(modifier = Modifier.height(20.dp))
 
-                // The Grid
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(GridConfig.COLUMNS),
-                    contentPadding = PaddingValues(top = 10.dp, bottom = 20.dp),
-                    verticalArrangement = GridConfig.VERTICAL_SPACING,
-                    horizontalArrangement = GridConfig.HORIZONTAL_SPACING,
-                    modifier = Modifier.fillMaxSize()
+                ElevatedCard(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 5.dp),
+                    shape = RoundedCornerShape(16.dp)
                 ) {
-                    items(dashboardItems) { item ->
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(110.dp)
-                                .clickable { navController?.navigate(item.route) },
-                            colors = CardDefaults.cardColors(containerColor = Color.White),
-                            elevation = CardDefaults.cardElevation(2.dp))
-                        {
-                            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize())
-                            {
-                                Column(horizontalAlignment = Alignment.CenterHorizontally)
-                                {
-                                    Icon(
-                                        painter = painterResource(id = item.iconRes),
-                                        contentDescription = item.title,
-                                        modifier = Modifier.size(35.dp),
-                                        tint = Color.Unspecified
-                                    )
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    Text(text = item.title, style = gridText, fontSize = 14.sp, color = item.color)
-                                }
-                            }
-                        }
-                    }
+                    Text("Total Issues: 124", modifier = Modifier.padding(16.dp))
                 }
+
+                ElevatedCard(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 5.dp),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Text("New Issues: 110", modifier = Modifier.padding(16.dp))
+                }
+
+                ElevatedCard(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 5.dp),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Text("Issues Fixed: 20", modifier = Modifier.padding(16.dp))
+                }
+
             }
+
+
+
         }
     }
 }

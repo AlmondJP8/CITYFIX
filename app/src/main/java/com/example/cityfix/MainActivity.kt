@@ -22,6 +22,7 @@ import androidx.navigation.compose.rememberNavController
 
 // Import your pages (Ensure these paths match your folder structure)
 import com.example.cityfix.pages.AdminPage.DashBoard
+import com.example.cityfix.pages.AdminPage.MapScreen
 import com.example.cityfix.pages.AdminPage.ReportsPage
 import com.example.cityfix.pages.AdminPage.issueTabs.Hazards
 import com.example.cityfix.pages.AdminPage.issueTabs.Lights
@@ -39,6 +40,8 @@ class MainActivity : ComponentActivity() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         enableEdgeToEdge()
 
+        org.osmdroid.config.Configuration.getInstance().userAgentValue = "CityFixApp"
+
         setContent {
             CITYFIXTheme(darkTheme = false) {
                 val navController = rememberNavController()
@@ -52,6 +55,7 @@ class MainActivity : ComponentActivity() {
                     //For admin page
                     composable("admin") { DashBoard(navController) }
                     composable("reports"){ReportsPage(navController)}
+                    composable ("map"){ MapScreen(navController) }
 
                     // Category Routes for admin
                     composable("power") {Power(navController)}
