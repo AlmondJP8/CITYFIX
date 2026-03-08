@@ -12,13 +12,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.cityfix.R
 import com.example.cityfix.ui.theme.appName
 import com.example.cityfix.ui.theme.headerContainer
 
 @Composable
 fun AdminHeader(
-    title: String = "Admin Control Panel", // Default title
+    title: String = "Admin Control Panel",
+    navController: NavController? = null,// Default title
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier.headerContainer().fillMaxWidth()) {
@@ -31,6 +33,18 @@ fun AdminHeader(
             Text(text = title, style = appName)
 
             Spacer(modifier = Modifier.weight(1f))
+
+            Image(
+                painter = painterResource(id = R.drawable.pic_bell),
+                contentDescription = "Notification",
+                modifier = Modifier
+                    .size(25.dp) // Added size so it's visible
+                    .clip(CircleShape)
+                    .background(Color(0xFFE8F1F2))
+            )
+
+            Spacer(modifier = Modifier.width(15.dp))
+
 
             Image(
                 painter = painterResource(id = R.drawable.pic_user_icon),

@@ -24,13 +24,13 @@ import androidx.navigation.compose.rememberNavController
 import com.example.cityfix.pages.AdminPage.DashBoard
 import com.example.cityfix.pages.AdminPage.MapScreen
 import com.example.cityfix.pages.AdminPage.ReportsPage
-import com.example.cityfix.pages.AdminPage.issueTabs.Hazards
-import com.example.cityfix.pages.AdminPage.issueTabs.Lights
-import com.example.cityfix.pages.AdminPage.issueTabs.Power
-import com.example.cityfix.pages.AdminPage.issueTabs.Streets
-import com.example.cityfix.pages.AdminPage.issueTabs.Trees
-import com.example.cityfix.pages.AdminPage.issueTabs.Waste
-import com.example.cityfix.pages.AdminPage.issueTabs.Water
+import com.example.cityfix.pages.AdminPage.IssueTabs.Hazards
+import com.example.cityfix.pages.AdminPage.IssueTabs.Lights
+import com.example.cityfix.pages.AdminPage.IssueTabs.Power
+import com.example.cityfix.pages.AdminPage.IssueTabs.Streets
+import com.example.cityfix.pages.AdminPage.IssueTabs.Trees
+import com.example.cityfix.pages.AdminPage.IssueTabs.Waste
+import com.example.cityfix.pages.AdminPage.IssueTabs.Water
 
 import com.example.cityfix.ui.theme.*
 
