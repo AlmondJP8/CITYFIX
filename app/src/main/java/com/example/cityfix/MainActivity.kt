@@ -80,7 +80,7 @@ fun Greeting(navController: androidx.navigation.NavController) {
                 modifier = Modifier.fillMaxWidth().padding(5.dp)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.pic_user),
+                    painter = painterResource(id = R.drawable.pic_logo),
                     contentDescription = "User",
                     modifier = Modifier.Logo()
                 )

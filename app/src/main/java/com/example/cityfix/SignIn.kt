@@ -29,7 +29,7 @@ fun LoginScreen(navController: NavController? = null) { // 1. Pass the NavContro
             Spacer(modifier = Modifier.weight(0.1f))
 
             Image(
-                painter = painterResource(id = R.drawable.pic_user),
+                painter = painterResource(id = R.drawable.pic_logo),
                 contentDescription = "Logo",
                 modifier = Modifier .size(100.dp) .clip(CircleShape)
             )
