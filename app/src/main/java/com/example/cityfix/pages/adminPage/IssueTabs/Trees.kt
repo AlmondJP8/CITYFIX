@@ -1,4 +1,4 @@
-package com.example.cityfix.pages.AdminPage.IssueTabs
+package com.example.cityfix.pages.adminPage.IssueTabs
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -12,7 +12,7 @@ import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Water(navController: NavController?) { // <-- Change this name for Water, Lights, etc.
+fun Trees(navController: NavController?) { // <-- Change this name for Water, Lights, etc.
     Scaffold(
         topBar = {
             TopAppBar(
@@ -32,8 +32,8 @@ fun Water(navController: NavController?) { // <-- Change this name for Water, Li
     }
 }
 
-@Preview(showBackground = true, name = "Water Screen")
+@Preview(showBackground = true, name = "Trees Screen")
 @Composable
-fun WaterPreview(){
-    Water(navController = null)
+fun TreesPreview(){
+    Trees(navController = null)
 }

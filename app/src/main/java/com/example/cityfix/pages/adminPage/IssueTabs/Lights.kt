@@ -1,4 +1,4 @@
-package com.example.cityfix.pages.AdminPage.IssueTabs
+package com.example.cityfix.pages.adminPage.IssueTabs
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn

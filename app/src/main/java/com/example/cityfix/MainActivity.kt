@@ -21,16 +21,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 
 // Import your pages (Ensure these paths match your folder structure)
-import com.example.cityfix.pages.AdminPage.DashBoard
-import com.example.cityfix.pages.AdminPage.MapScreen
-import com.example.cityfix.pages.AdminPage.ReportsPage
-import com.example.cityfix.pages.AdminPage.IssueTabs.Hazards
-import com.example.cityfix.pages.AdminPage.IssueTabs.Lights
-import com.example.cityfix.pages.AdminPage.IssueTabs.Power
-import com.example.cityfix.pages.AdminPage.IssueTabs.Streets
-import com.example.cityfix.pages.AdminPage.IssueTabs.Trees
-import com.example.cityfix.pages.AdminPage.IssueTabs.Waste
-import com.example.cityfix.pages.AdminPage.IssueTabs.Water
+import com.example.cityfix.pages.adminPage.DashBoard
+import com.example.cityfix.pages.adminPage.MapScreen
+import com.example.cityfix.pages.adminPage.ReportsPage
+import com.example.cityfix.pages.adminPage.IssueTabs.Hazards
+import com.example.cityfix.pages.adminPage.IssueTabs.Lights
+import com.example.cityfix.pages.adminPage.IssueTabs.Power
+import com.example.cityfix.pages.adminPage.IssueTabs.Streets
+import com.example.cityfix.pages.adminPage.IssueTabs.Trees
+import com.example.cityfix.pages.adminPage.IssueTabs.Waste
+import com.example.cityfix.pages.adminPage.IssueTabs.Water
 
 import com.example.cityfix.ui.theme.*
 
