@@ -1,33 +1,49 @@
 package com.example.cityfix.pages.adminPage.IssueTabs
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.cityfix.ui.theme.MainBG
+import com.example.cityfix.uiComponents.AdminHeader
+import com.example.cityfix.uiComponents.IssueItem
+import com.example.cityfix.uiComponents.IssueTabTemplate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Power(navController: NavController?) { // <-- Change this name for Water, Lights, etc.
+    // Only keep the data here
+    val powerData = remember {
+        listOf(
+            IssueItem("Broken Power Line", "123 Main St", "Pending", "10 mins ago", "Urgent"),
+            IssueItem("Exposed Wires", "456 Oak Ave", "Ongoing", "20 mins ago", "High"),
+            IssueItem("Leaning Pole", "246 jake St", "Pending", "1hr ago", "Normal"),
+            IssueItem("Transformer Sparking", "Downtown Alley", "Ongoing", "35 mins ago", "Medium"),
+            IssueItem("Downed Cable", "Westside Park", "Resolved", "40 mins ago", "Urgent")
+
+        )
+    }
+
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Power Issues") }, // <-- Change title per screen
-                navigationIcon = {
-                    IconButton(onClick = { navController?.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                }
-            )
-        }
+        topBar = { AdminHeader(title = "Hazard Report") }
     ) { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues).padding(16.dp)) {
-            Text("Report a new power issue or view existing status here.")
-            // Your form or list goes here
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .MainBG()
+        ) {
+
+            // Just call the template!
+            IssueTabTemplate(
+                totalCount = 124,
+                newCount = 110,
+                issues = powerData,
+                navController = navController
+            )
         }
     }
 }

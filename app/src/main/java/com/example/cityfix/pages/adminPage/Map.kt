@@ -79,7 +79,6 @@ val allMapIssues = listOf(
     MapIssue("Broken road light", GeoPoint(6.747414, 125.355485), "Lights"),
     MapIssue("Tree branches", GeoPoint(6.748926, 125.355485), "Trees"),
     MapIssue("Power Line cut", GeoPoint(6.745311, 125.355485), "Hazards"),
-
 )
 
 @Composable
@@ -144,7 +143,7 @@ fun MapScreen(navController: NavController?) {
                                 context = mapView.context,
                                 iconResId = iconRes,
                                 backgroundColor = bgColor,
-                                sizePx = 70 // I bumped this to 100 so it's easier to see!
+                                sizePx = 70
                             )
 
                             marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)

@@ -37,7 +37,6 @@ import com.example.cityfix.ui.theme.gridText
 import com.example.cityfix.uiComponents.AdminBottomBar
 import com.example.cityfix.uiComponents.AdminHeader
 
-
 data class DashboardItem(
     val title: String,
     val iconRes: Int,
@@ -67,7 +66,6 @@ fun ReportsPage(navController: NavController?) {
             DashboardItem("Waste", R.drawable.pic_trash, "waste", Color(0xFF8D6E63))
         )
     }
-
 
     Scaffold(
         bottomBar = {
