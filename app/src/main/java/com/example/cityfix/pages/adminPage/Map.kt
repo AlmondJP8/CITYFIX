@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.example.cityfix.R
+import com.example.cityfix.uiComponents.MapSorter
 
 // Helper to get a Drawable and convert it for the Map
 fun createCustomMarker(
@@ -52,7 +53,6 @@ fun createCustomMarker(
     backgroundColor: Int, // The background color (e.g., Color.BLUE)
     sizePx: Int // The target size (e.g., 60)
 ): Drawable {
-
     // 1. Create the blank canvas
     val bitmap = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
@@ -71,7 +71,6 @@ fun createCustomMarker(
         icon.setBounds(padding, padding, sizePx - padding, sizePx - padding)
         icon.draw(canvas)
     }
-
     return BitmapDrawable(context.resources, bitmap)
 }
 
@@ -84,11 +83,12 @@ data class MapIssue(
 // Sample Data
 val allMapIssues = listOf(
     MapIssue("Kulang sa IT", GeoPoint(6.742454, 125.358471), "Water"),
-//    MapIssue("Downed Pole", GeoPoint(-1.288, 36.820), "Power"),
-//    MapIssue("Pothole", GeoPoint(-1.290, 36.815), "Roads"),
-//    MapIssue("Pothole", GeoPoint(-1.299, 36.815), "Waste"),
-//    MapIssue("Pothole", GeoPoint(-1.305, 36.815), "Trees"),
-//    MapIssue("Pothole", GeoPoint(-1.203, 36.815), "Lights")
+    MapIssue("Wifi Problem", GeoPoint(6.749764, 125.350934), "Power"),
+    MapIssue("Lots of Waste", GeoPoint(6.750700, 125.356373), "Waste"),
+    MapIssue("PotHole", GeoPoint(6.749545, 125.355485), "Roads"),
+    MapIssue("Broken road light", GeoPoint(6.747414, 125.355485), "Lights"),
+    MapIssue("Tree branches", GeoPoint(6.748926, 125.355485), "Trees"),
+    MapIssue("Power Line cut", GeoPoint(6.745311, 125.355485), "Hazards"),
 
 )
 
@@ -129,8 +129,7 @@ fun MapScreen(navController: NavController?) {
                     update = { mapView ->
                         mapView.overlays.clear()
 
-                        val composebg = Color(0xA9FFFFFF)
-
+                        val composebg = Color(0xC1FFFFFF)
                         val filteredMarkers = allMapIssues.filter {
                             selectedCategory == "All" || it.category == selectedCategory
                         }
@@ -165,28 +164,7 @@ fun MapScreen(navController: NavController?) {
                     }
                 )
             }
-
-            // --- THE SORTER LAYER (Floating on top) ---
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)
-                    .horizontalScroll(rememberScrollState()), // Allows many categories
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                val categories = listOf("All", "Water", "Power", "Roads", "Hazards", "Lights", "Trees", "Waste")
-                categories.forEach { category ->
-                    FilterChip(
-                        selected = selectedCategory == category,
-                        onClick = { selectedCategory = category },
-                        label = { Text(category) },
-                        colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = MaterialTheme.colorScheme.primary,
-                            selectedLabelColor = Color.White
-                        )
-                    )
-                }
-            }
+            MapSorter()
         }
     }
 }
