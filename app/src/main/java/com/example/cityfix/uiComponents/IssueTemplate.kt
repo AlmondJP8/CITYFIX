@@ -28,13 +28,24 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import kotlin.collections.filter
 
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
 data class IssueItem(
     val description: String,
     val location: String,
     val status: String,
-    val time: String,
+    val time: Long,
     val urgency: String
 )
+
+fun formatTimestamp(milliseconds: Long): String {
+    if (milliseconds == 0L) return "Pending..." // Handles cases where Firebase hasn't synced yet
+    val sdf = SimpleDateFormat("MMM dd, yyyy - hh:mm a", Locale.getDefault())
+    val date = Date(milliseconds)
+    return sdf.format(date)
+}
 @Composable
 fun IssueTabTemplate(
     issues: List<IssueItem>, // We'll define this data class below
@@ -127,7 +138,7 @@ fun IssueCard(item: IssueItem) {
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = " • ${item.time}",
+                    text = " • ${formatTimestamp(item.time)}",
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray
                 )

@@ -3,7 +3,11 @@ package com.example.cityfix.pages.adminPage.IssueTabs
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
@@ -11,24 +15,40 @@ import com.example.cityfix.ui.theme.MainBG
 import com.example.cityfix.uiComponents.AdminHeader
 import com.example.cityfix.uiComponents.IssueItem
 import com.example.cityfix.uiComponents.IssueTabTemplate
+import com.google.firebase.firestore.firestore
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Power(navController: NavController?) { // <-- Change this name for Water, Lights, etc.
-    // Only keep the data here
-    val powerData = remember {
-        listOf(
-            IssueItem("Broken Power Line", "123 Main St", "Pending", "10 mins ago", "Urgent"),
-            IssueItem("Exposed Wires", "456 Oak Ave", "Ongoing", "20 mins ago", "High"),
-            IssueItem("Leaning Pole", "246 jake St", "Pending", "1hr ago", "Normal"),
-            IssueItem("Transformer Sparking", "Downtown Alley", "Ongoing", "35 mins ago", "Medium"),
-            IssueItem("Downed Cable", "Westside Park", "Resolved", "40 mins ago", "Urgent")
+    val db = com.google.firebase.Firebase.firestore
 
-        )
+    // 1. State to hold the live data from Firebase
+    var powerData by remember { mutableStateOf(listOf<IssueItem>()) }
+    var isLoading by remember { mutableStateOf(true) }
+
+    // 2. Connect to the "issues" collection
+    LaunchedEffect(Unit) {
+        db.collection("Issues") // Ensure this matches your capital "I" collection
+            .whereEqualTo("category", "Power") // Filters for the "Toxic Waste" entry
+            .addSnapshotListener { value, error ->
+                if (error == null && value != null) {
+                    powerData = value.documents.map { doc ->
+                        IssueItem(
+                            description = doc.getString("description") ?: "No Description",
+                            location = doc.getString("location") ?: "Unknown Location",
+                            status = doc.getString("status") ?: "Pending",
+                            urgency = doc.getString("urgency") ?: "Normal",
+                            time = doc.getTimestamp("time")?.toDate()?.time ?: 0L
+
+                        )
+                    }
+                }
+                isLoading = false
+            }
     }
 
     Scaffold(
-        topBar = { AdminHeader(title = "Hazard Report") }
+        topBar = { AdminHeader(title = "Power Report Issue") }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -36,14 +56,19 @@ fun Power(navController: NavController?) { // <-- Change this name for Water, Li
                 .padding(paddingValues)
                 .MainBG()
         ) {
-
-            // Just call the template!
-            IssueTabTemplate(
-                totalCount = 124,
-                newCount = 110,
-                issues = powerData,
-                navController = navController
-            )
+            if (isLoading) {
+                Box(Modifier.fillMaxSize(), contentAlignment = androidx.compose.ui.Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            } else {
+                // 3. Pass the live firebase data to your template
+                IssueTabTemplate(
+                    totalCount = powerData.size,
+                    newCount = powerData.count { it.status == "Pending" },
+                    issues = powerData,
+                    navController = navController
+                )
+            }
         }
     }
 }

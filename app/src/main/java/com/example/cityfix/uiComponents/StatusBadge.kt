@@ -1,5 +1,12 @@
 package com.example.cityfix.uiComponents
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.RectF
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
@@ -11,6 +18,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 
 @Composable
 fun StatusBadge(status: String) {
@@ -31,4 +39,28 @@ fun StatusBadge(status: String) {
             style = TextStyle(color = color, fontWeight = FontWeight.Bold, fontSize = 10.sp)
         )
     }
+}
+
+
+fun createCustomMarker(context: Context, iconResId: Int, backgroundColor: Int, sizePx: Int
+): Drawable {
+    // 1. Create the blank canvas
+    val bitmap = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+
+    // 2. Draw the background shape (e.g., a circle)
+    paint.color = backgroundColor
+    val rect = RectF(0f, 0f, sizePx.toFloat(), sizePx.toFloat())
+    canvas.drawOval(rect, paint)
+
+    // 3. Draw the PNG icon on top
+    val icon = ContextCompat.getDrawable(context, iconResId)
+    if (icon != null) {
+        // Calculate padding (e.g., 20% from the edge)
+        val padding = sizePx / 5
+        icon.setBounds(padding, padding, sizePx - padding, sizePx - padding)
+        icon.draw(canvas)
+    }
+    return BitmapDrawable(context.resources, bitmap)
 }

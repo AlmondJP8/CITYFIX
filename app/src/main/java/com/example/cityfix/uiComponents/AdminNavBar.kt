@@ -1,10 +1,8 @@
 package com.example.cityfix.uiComponents
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -38,7 +36,7 @@ fun AdminBottomBar(navController: NavController?, currentRoute: String?) {
             containerColor = Color.White,       // Forces white background
             tonalElevation = 0.dp               // Removes the Material 3 gray/purple tint
         ) {
-            // DASHBOARD ITEM
+            // Dashboard
             NavigationBarItem(
                 selected = currentRoute == "admin",
                 onClick = {
@@ -57,7 +55,7 @@ fun AdminBottomBar(navController: NavController?, currentRoute: String?) {
                     colors = itemColors
             )
 
-            // USERS ITEM
+            // Reports
             NavigationBarItem(
                     selected = currentRoute == "reports",
             onClick = {
@@ -76,7 +74,7 @@ fun AdminBottomBar(navController: NavController?, currentRoute: String?) {
                 colors = itemColors
             )
 
-            // MAP ITEM
+            // Map
             NavigationBarItem(
                 selected = currentRoute == "map",
                 onClick = {
@@ -96,7 +94,7 @@ fun AdminBottomBar(navController: NavController?, currentRoute: String?) {
                         colors = itemColors
             )
 
-            // EXIT ITEM
+            //Setting
             NavigationBarItem(
                 selected = currentRoute == "setting",
                 onClick = {

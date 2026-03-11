@@ -33,9 +33,7 @@ data class Dashboard(
 
 @Composable
 fun DashBoard(navController: NavController?) {
-    // 1. Check if we are in the Preview window
     val isPreview = LocalInspectionMode.current
-    // 2. Only "listen" to the backstack if we are NOT in the preview
     val currentRoute = if (isPreview) {
         "admin" // Default for preview
     } else {

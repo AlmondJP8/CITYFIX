@@ -19,8 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.cityfix.pages.UserPage.SubmissionPage
 
-// Import your pages (Ensure these paths match your folder structure)
 import com.example.cityfix.pages.adminPage.DashBoard
 import com.example.cityfix.pages.adminPage.MapScreen
 import com.example.cityfix.pages.adminPage.ReportsPage
@@ -52,6 +52,11 @@ class MainActivity : ComponentActivity() {
                     composable("login") {LoginScreen(navController)}
                     composable("signup"){SignUpScreen(navController)}
 
+                    //For User
+                    composable("submission") {
+                        SubmissionPage(navController, onSuccess = { navController.popBackStack() })
+                    }
+
                     //For admin page
                     composable("admin") { DashBoard(navController) }
                     composable("reports"){ReportsPage(navController)}
@@ -65,6 +70,8 @@ class MainActivity : ComponentActivity() {
                     composable("hazards") {Hazards(navController)}
                     composable("trees") {Trees(navController)}
                     composable("waste") {Waste(navController)}
+
+
                 }
             }
         }
@@ -86,15 +93,19 @@ fun Greeting(navController: androidx.navigation.NavController) {
                 )
                 Text(text = AppStrings.APP_NAME,
                     style = appName,
-                    modifier = Modifier.clickable{navController.navigate("signup")}
+                    modifier = Modifier
                 )
                 Spacer(modifier = Modifier.weight(1f))
+
                 Text(
                     text = AppStrings.LOGIN_BUTTON,
                     style = ButtonText,
                     modifier = Modifier.headertext().clickable { navController.navigate("login") }
                 )
-                Text(text = AppStrings.SIGN_UP_BUTTON, style = ButtonText, modifier = Modifier.headertext())
+
+                Text(text = AppStrings.SIGN_UP_BUTTON,
+                    style = ButtonText,
+                    modifier = Modifier.headertext().clickable{ navController.navigate("submission")})
             }
         }
 

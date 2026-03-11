@@ -1,10 +1,5 @@
 package com.example.cityfix.pages.adminPage
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.RectF
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,43 +24,14 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.toArgb
-import androidx.core.content.ContextCompat
 import com.example.cityfix.R
 import com.example.cityfix.uiComponents.MapSorter
+import com.example.cityfix.uiComponents.createCustomMarker
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 
-// Helper to get a Drawable and convert it for the Map
-fun createCustomMarker(
-    context: Context,
-    iconResId: Int,
-    backgroundColor: Int, // The background color (e.g., Color.BLUE)
-    sizePx: Int // The target size (e.g., 60)
-): Drawable {
-    // 1. Create the blank canvas
-    val bitmap = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888)
-    val canvas = Canvas(bitmap)
-    val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-
-    // 2. Draw the background shape (e.g., a circle)
-    paint.color = backgroundColor
-    val rect = RectF(0f, 0f, sizePx.toFloat(), sizePx.toFloat())
-    canvas.drawOval(rect, paint)
-
-    // 3. Draw the PNG icon on top
-    val icon = ContextCompat.getDrawable(context, iconResId)
-    if (icon != null) {
-        // Calculate padding (e.g., 20% from the edge)
-        val padding = sizePx / 5
-        icon.setBounds(padding, padding, sizePx - padding, sizePx - padding)
-        icon.draw(canvas)
-    }
-    return BitmapDrawable(context.resources, bitmap)
-}
 
 data class MapIssue(
     val title: String,

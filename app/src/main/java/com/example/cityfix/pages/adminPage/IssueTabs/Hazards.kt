@@ -10,40 +10,57 @@ import com.example.cityfix.ui.theme.MainBG
 import com.example.cityfix.uiComponents.AdminHeader
 import com.example.cityfix.uiComponents.IssueItem
 import com.example.cityfix.uiComponents.IssueTabTemplate
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
 
 // --- THE RECYCLABLE TEMPLATE ---
 @Composable
 fun Hazards(navController: NavController?) {
     val db = com.google.firebase.Firebase.firestore
-
-    // 1. State to hold the live data from Firebase
     var hazardData by remember { mutableStateOf(listOf<IssueItem>()) }
+    var lastCheckTime by remember { mutableLongStateOf(0L) }
     var isLoading by remember { mutableStateOf(true) }
 
     // 2. Connect to the "issues" collection
     LaunchedEffect(Unit) {
+        db.collection("AdminView").document("usage_stats")
+            .get().addOnSuccessListener { doc ->
+                lastCheckTime = doc.getTimestamp("viewstats")?.toDate()?.time ?: 0L
+            }
+
         db.collection("Issues")
-            .whereEqualTo("category", "Hazards") // Only get hazards!
+            .whereEqualTo("category", "Hazards")
             .addSnapshotListener { value, error ->
                 if (error == null && value != null) {
                     hazardData = value.documents.map { doc ->
-                        // Map the Firebase fields to your IssueItem model
                         IssueItem(
-                            description = doc.getString("title") ?: "Untitled",
+                            description = doc.getString("description") ?: "No Description",
                             location = doc.getString("location") ?: "Unknown Location",
                             status = doc.getString("status") ?: "Pending",
-                            time = "Just now", // You can format doc.getTimestamp("created_at") here later
-                            urgency = doc.getString("priority") ?: "Normal"
+                            urgency = doc.getString("urgency") ?: "Normal",
+                            time = doc.getTimestamp("time")?.toDate()?.time ?: 0L
                         )
                     }
                 }
                 isLoading = false
             }
+
     }
 
+    // 2. Update "Last Checked" when the Admin leaves the page
+    DisposableEffect(Unit) {
+        onDispose {
+            val now = com.google.firebase.Timestamp.now()
+            db.collection("AdminView").document("usage_stats")
+                .set(mapOf("viewstats" to now), SetOptions.merge())
+        }
+    }
+
+    // 3. Logic: An issue is "New" if it was created AFTER the last time Admin checked the page
+    val newIssuesCount = hazardData.count { it.time > lastCheckTime }
+
     Scaffold(
-        topBar = { AdminHeader(title = "Hazard Report", navController = navController) }
+        topBar = { AdminHeader(title = "Hazard Report Issue", navController = navController) }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -59,7 +76,7 @@ fun Hazards(navController: NavController?) {
                 // 3. Pass the live firebase data to your template
                 IssueTabTemplate(
                     totalCount = hazardData.size,
-                    newCount = hazardData.count { it.status == "Pending" },
+                    newCount =newIssuesCount,
                     issues = hazardData,
                     navController = navController
                 )
