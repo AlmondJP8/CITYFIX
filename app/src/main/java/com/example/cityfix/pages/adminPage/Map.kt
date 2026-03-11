@@ -31,10 +31,13 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.content.ContextCompat
 import com.example.cityfix.R
 import com.example.cityfix.uiComponents.MapSorter
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 
 // Helper to get a Drawable and convert it for the Map
 fun createCustomMarker(
@@ -67,35 +70,72 @@ fun createCustomMarker(
 data class MapIssue(
     val title: String,
     val point: GeoPoint,
-    val category: String
+    val category: String,
+    val description: String,
+    val urgency: String,
+    val locationName: String // Added this to match your screenshot
 )
 
-// Sample Data
-val allMapIssues = listOf(
-    MapIssue("Kulang sa IT", GeoPoint(6.742454, 125.358471), "Water"),
-    MapIssue("Wifi Problem", GeoPoint(6.749764, 125.350934), "Power"),
-    MapIssue("Lots of Waste", GeoPoint(6.750700, 125.356373), "Waste"),
-    MapIssue("PotHole", GeoPoint(6.749545, 125.355485), "Roads"),
-    MapIssue("Broken road light", GeoPoint(6.747414, 125.355485), "Lights"),
-    MapIssue("Tree branches", GeoPoint(6.748926, 125.355485), "Trees"),
-    MapIssue("Power Line cut", GeoPoint(6.745311, 125.355485), "Hazards"),
-)
+//// Sample Data
+//val allMapIssues = listOf(
+//(6.742454, 125.358471), "Water"),
+//(6.749764, 125.350934), "Power"),
+//(6.750700, 125.356373), "Waste"),
+//(6.749545, 125.355485), "Roads"),
+//(6.747414, 125.355485), "Lights"),
+//(6.748926, 125.355485), "Trees"),
+//(6.745311, 125.355485), "Hazards"),
+//)
 
 @Composable
 fun MapScreen(navController: NavController?) {
     val isPreview = LocalInspectionMode.current
+    val db = Firebase.firestore
 
-    // 1. Track which category is selected
+    var firebaseIssues by remember { mutableStateOf(listOf<MapIssue>()) }
     var selectedCategory by remember { mutableStateOf("All") }
+
+    LaunchedEffect(Unit) {
+        db.collection("Issues").addSnapshotListener { value, error ->
+            if (error != null) {
+                android.util.Log.e("MAP_DEBUG", "Firebase Error: ${error.message}")
+                return@addSnapshotListener
+            }
+
+            if (value != null) {
+                android.util.Log.d("MAP_DEBUG", "Found ${value.documents.size} total docs in 'issues'")
+
+                firebaseIssues = value.documents.mapNotNull { doc ->
+                    val title = doc.getString("description")
+                    val latRaw = doc.get("latitude")
+                    val lonRaw = doc.get("longitude")
+
+                    // This will print to your Logcat exactly what is coming from the cloud
+                    android.util.Log.d("MAP_DEBUG", "Doc: ${doc.id} | Lat: $latRaw (${latRaw?.javaClass?.simpleName})")
+
+                    // Safely convert whatever type comes in (Long or Double) to Double
+                    val lat = (latRaw as? Number)?.toDouble() ?: 0.0
+                    val lon = (lonRaw as? Number)?.toDouble() ?: 0.0
+                    val cat = doc.getString("category") ?: ""
+                    val urg = doc.getString("urgency") ?: "Normal"
+                    val loc = doc.getString("location") ?: "Unknown"
+
+                    if (lat != 0.0 && lon != 0.0) {
+                        MapIssue(title ?: "No Desc", GeoPoint(lat, lon), cat, title ?: "", urg, loc)
+                    } else {
+                        android.util.Log.w("MAP_DEBUG", "Skipping ${doc.id} - Lat/Lon is 0.0 or wrong type")
+                        null
+                    }
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = { AdminHeader(title = "City Issue Map", navController = navController) },
         bottomBar = { AdminBottomBar(navController = navController, currentRoute = "map") }
     ) { innerPadding ->
-        // Use a Box to overlay buttons ON TOP of the map
         Box(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
-
-            // --- THE MAP LAYER ---
             if (isPreview) {
                 Box(Modifier.fillMaxSize().background(Color.LightGray), contentAlignment = Alignment.Center) {
                     Text("Map View")
@@ -104,56 +144,63 @@ fun MapScreen(navController: NavController?) {
                 AndroidView(
                     factory = { ctx ->
                         MapView(ctx).apply {
+                            org.osmdroid.config.Configuration.getInstance().userAgentValue = ctx.packageName
                             setTileSource(TileSourceFactory.MAPNIK)
-
-                            // --- THIS ENABLES PINCH ZOOM ---
                             setMultiTouchControls(true)
 
-                            // Set initial view
-                            controller.setZoom(15.0)
+                            controller.setZoom(16.0)
                             controller.setCenter(GeoPoint(6.742454, 125.358471))
+
+                            this.onResume()
                         }
                     },
                     modifier = Modifier.fillMaxSize(),
                     update = { mapView ->
                         mapView.overlays.clear()
+                        val composebg = Color(0xC1FFFFFF).toArgb()
 
-                        val composebg = Color(0xC1FFFFFF)
-                        val filteredMarkers = allMapIssues.filter {
+                        firebaseIssues.filter {
                             selectedCategory == "All" || it.category == selectedCategory
-                        }
-
-                        filteredMarkers.forEach { issue ->
-                            val marker = Marker(mapView)
-                            marker.position = issue.point
-                            marker.title = issue.title
-
-                            val (iconRes, bgColor) = when (issue.category) {
-                                "Water" -> Pair(R.drawable.pic_water, composebg.toArgb())
-                                "Power" -> Pair(R.drawable.pic_bolt, composebg.toArgb())
-                                "Roads" -> Pair(R.drawable.pic_road, composebg.toArgb())
-                                "Lights" -> Pair(R.drawable.pic_light, composebg.toArgb())
-                                "Hazards" -> Pair(R.drawable.pic_hazard, composebg.toArgb())
-                                "Trees" -> Pair(R.drawable.pic_trees, composebg.toArgb())
-                                "Waste" -> Pair(R.drawable.pic_trash, composebg.toArgb())
-                                else -> Pair(R.drawable.pic_trash, composebg.toArgb())
+                        }.forEach { issue ->
+                            val iconRes = when (issue.category) {
+                                "Water" -> R.drawable.pic_water
+                                "Power" -> R.drawable.pic_bolt
+                                "Roads" -> R.drawable.pic_road
+                                "Lights" -> R.drawable.pic_light
+                                "Hazards" -> R.drawable.pic_hazard
+                                "Trees" -> R.drawable.pic_trees
+                                "Waste" -> R.drawable.pic_trash
+                                else -> null
                             }
 
-                            marker.icon = createCustomMarker(
-                                context = mapView.context,
-                                iconResId = iconRes,
-                                backgroundColor = bgColor,
-                                sizePx = 70
-                            )
+                            if (iconRes != null) {
+                                val marker = Marker(mapView)
+                                marker.position = issue.point
 
-                            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                            mapView.overlays.add(marker)
+                                // Enhanced Info Window
+                                marker.title = issue.description
+                                marker.snippet = "Location: ${issue.locationName}"
+                                marker.subDescription = "Urgency: ${issue.urgency}"
+
+                                marker.icon = createCustomMarker(
+                                    context = mapView.context,
+                                    iconResId = iconRes,
+                                    backgroundColor = composebg,
+                                    sizePx = 70
+                                )
+
+                                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
+                                mapView.overlays.add(marker)
+                            }
                         }
                         mapView.invalidate()
                     }
                 )
             }
-            MapSorter()
+            MapSorter(
+                selectedCategory = selectedCategory,
+                onCategorySelected = { selectedCategory = it }
+            )
         }
     }
 }

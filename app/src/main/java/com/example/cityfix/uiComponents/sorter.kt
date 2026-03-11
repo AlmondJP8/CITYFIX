@@ -1,5 +1,6 @@
 package com.example.cityfix.uiComponents
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,10 +20,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -69,23 +66,23 @@ fun IssueSorterBar(
 }
 
 @Composable
-fun MapSorter(){
-
-    var selectedCategory by remember { mutableStateOf("All") }
-
-    // --- THE SORTER LAYER (Floating on top) ---
+fun MapSorter(
+    selectedCategory: String, // Receive the current value
+    onCategorySelected: (String) -> Unit // Receive a function to call when clicked
+){
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(10.dp)
-            .horizontalScroll(rememberScrollState()), // Allows many categories
+            .background(Color(0x92FFFFFF))
+            .horizontalScroll(rememberScrollState()),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         val categories = listOf("All", "Water", "Power", "Roads", "Hazards", "Lights", "Trees", "Waste")
         categories.forEach { category ->
             FilterChip(
                 selected = selectedCategory == category,
-                onClick = { selectedCategory = category },
+                onClick = { onCategorySelected(category) }, // Call the parent's function
                 label = { Text(category) },
                 colors = FilterChipDefaults.filterChipColors(
                     selectedContainerColor = MaterialTheme.colorScheme.primary,

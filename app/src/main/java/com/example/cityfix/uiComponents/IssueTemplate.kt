@@ -29,7 +29,7 @@ import androidx.navigation.NavController
 import kotlin.collections.filter
 
 data class IssueItem(
-    val title: String,
+    val description: String,
     val location: String,
     val status: String,
     val time: String,
@@ -109,7 +109,7 @@ fun IssueCard(item: IssueItem) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = item.title,
+                    text = item.description,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
