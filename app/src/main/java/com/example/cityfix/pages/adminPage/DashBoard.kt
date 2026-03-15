@@ -12,7 +12,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -26,27 +25,15 @@ import com.example.cityfix.uiComponents.AdminBottomBar
 import com.example.cityfix.uiComponents.AdminHeader
 import com.example.cityfix.uiComponents.DashboardChart
 
-data class Dashboard(
-    val title: String,
-    val number: String,
-)
-
 @Composable
 fun DashBoard(navController: NavController?) {
     val isPreview = LocalInspectionMode.current
     val currentRoute = if (isPreview) {
-        "admin" // Default for preview
+        "dashboard" // Default for preview
     } else {
         navController?.currentBackStackEntryAsState()?.value?.destination?.route
     }
 
-    val dashboardItems = remember {
-        listOf(
-            Dashboard("Total Issue", "125"),
-            Dashboard("New Issue", "10"),
-            Dashboard("Issue Fixed", "20"),
-        )
-    }
 
     Scaffold(
         bottomBar = {

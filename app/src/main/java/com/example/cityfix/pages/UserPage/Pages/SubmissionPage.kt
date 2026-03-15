@@ -22,12 +22,17 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.cityfix.ui.theme.MainBG
-import com.example.cityfix.uiComponents.AdminBottomBar
 import com.example.cityfix.uiComponents.AdminHeader
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+
+val report = hashMapOf(
+    "category" to "",
+    "status" to "",
+    "timestamp" to FieldValue.serverTimestamp() // ADD THIS
+)
 
 @Composable
 fun SubmissionPage(navController: NavController, onSuccess: () -> Unit) {
@@ -42,8 +47,8 @@ fun SubmissionPage(navController: NavController, onSuccess: () -> Unit) {
     // Form states
     var description by remember { mutableStateOf("") }
     var locationName by remember { mutableStateOf("") }
-    var selectedCategory by remember { mutableStateOf("Hazards") }
-    var selectedUrgency by remember { mutableStateOf("Normal") }
+    var selectedCategory by remember { mutableStateOf("") }
+    var selectedUrgency by remember { mutableStateOf("") }
     var isSubmitting by remember { mutableStateOf(false) }
 
     val categories = listOf("Hazards", "Water", "Power", "Roads", "Waste", "Lights", "Trees")
@@ -58,7 +63,7 @@ fun SubmissionPage(navController: NavController, onSuccess: () -> Unit) {
             "category" to selectedCategory,
             "urgency" to selectedUrgency,
             "status" to "Pending",
-            "time" to FieldValue.serverTimestamp(),
+            "timestamp" to FieldValue.serverTimestamp(),
             "latitude" to lat,
             "longitude" to lng
         )
@@ -120,17 +125,13 @@ fun SubmissionPage(navController: NavController, onSuccess: () -> Unit) {
                 try {
                     val intentSenderRequest = IntentSenderRequest.Builder(exception.resolution.intentSender).build()
                     settingResultLauncher.launch(intentSenderRequest)
-                } catch (e: IntentSender.SendIntentException) { /* Ignore */ }
+                } catch (e: IntentSender.SendIntentException) { }
             }
         }
     }
 
     // --- UI ---
-
     Scaffold(
-        bottomBar = {
-            AdminBottomBar(navController = navController, currentRoute = currentRoute)
-        }
     ) { innerPadding ->
         Column(
             modifier = Modifier

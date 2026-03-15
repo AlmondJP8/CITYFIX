@@ -5,6 +5,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.animation.core.EaseOutBack
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -36,21 +43,48 @@ import com.example.cityfix.ui.theme.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         enableEdgeToEdge()
-
         org.osmdroid.config.Configuration.getInstance().userAgentValue = "CityFixApp"
+
+        // This ensures the system splash disappears immediately
+        splashScreen.setOnExitAnimationListener { viewProvider ->
+            viewProvider.remove()
+        }
 
         setContent {
             CITYFIXTheme(darkTheme = false) {
                 val navController = rememberNavController()
 
-                NavHost(navController = navController, startDestination = "start") {
+                NavHost(navController = navController, startDestination = "splash_screen") {
+
+                    //animated slpashscreen
+                    composable(route = "splash_screen",
+                        exitTransition = {
+                            fadeOut(animationSpec = tween(500)) +
+                                    scaleOut(targetScale = 0.9f, animationSpec = tween(500))
+                        }
+                    ) {
+                        SplashScreen(navController)
+                    }
+
                     // Main App Routes
-                    composable("start") {Greeting(navController)}
-                    composable("login") {LoginScreen(navController)}
-                    composable("signup"){SignUpScreen(navController)}
+                    composable("start", enterTransition = {
+                            // How the dashboard arrives: it fades in and "pops" up
+                            fadeIn(animationSpec = tween(800)) +
+                                    scaleIn(initialScale = 0.8f, animationSpec = tween(600, easing = EaseOutBack))
+                        }) {Greeting(navController)}
+                    composable("login", enterTransition = {
+                        fadeIn(animationSpec = tween(800)) +
+                                scaleIn(initialScale = 0.8f, animationSpec = tween(600, easing = EaseOutBack))
+                    }) {LoginScreen(navController)}
+                    composable("signup", enterTransition = {
+                        fadeIn(animationSpec = tween(800)) +
+                                scaleIn(initialScale = 0.8f, animationSpec = tween(600, easing = EaseOutBack))
+                    }){SignUpScreen(navController)}
 
                     //For User
                     composable("submission") {
@@ -58,7 +92,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     //For admin page
-                    composable("admin") { DashBoard(navController) }
+                    composable("dashboard") { DashBoard(navController) }
                     composable("reports"){ReportsPage(navController)}
                     composable ("map"){ MapScreen(navController) }
 
@@ -105,7 +139,7 @@ fun Greeting(navController: androidx.navigation.NavController) {
 
                 Text(text = AppStrings.SIGN_UP_BUTTON,
                     style = ButtonText,
-                    modifier = Modifier.headertext().clickable{ navController.navigate("submission")})
+                    modifier = Modifier.headertext().clickable{ navController.navigate("signup")})
             }
         }
 

@@ -1,20 +1,35 @@
 package com.example.cityfix.uiComponents
 
+import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.cityfix.R
+import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
 fun AdminBottomBar(navController: NavController?, currentRoute: String?) {
+    var hasNewReports by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val db = FirebaseFirestore.getInstance()
+
+    // 1. Rename this to activeRoute to avoid conflict with the parameter 'currentRoute'
+    val navBackStackEntry by navController?.currentBackStackEntryAsState() ?: remember { mutableStateOf(null) }
+    val activeRoute = navBackStackEntry?.destination?.route ?: currentRoute
+
+    val sharedPrefs = remember { context.getSharedPreferences("AdminPrefs", Context.MODE_PRIVATE) }
+
     val itemColors = NavigationBarItemDefaults.colors(
         indicatorColor = Color.Transparent,
         selectedIconColor = Color(0xFF1976D2),
@@ -23,93 +38,99 @@ fun AdminBottomBar(navController: NavController?, currentRoute: String?) {
         unselectedTextColor = Color.Black
     )
 
-    // Column wraps the Divider and the Bar to keep them together
+    // Use activeRoute here
+    DisposableEffect(activeRoute) {
+        if (activeRoute == "reports") {
+            hasNewReports = false
+            sharedPrefs.edit().putLong("last_checked", System.currentTimeMillis()).apply()
+        }
+
+        val listenerRegistration = db.collection("Issues")
+            .whereEqualTo("status", "Pending")
+            .addSnapshotListener { snapshots, e ->
+                // Check activeRoute inside the listener
+                if (e != null || activeRoute == "reports") {
+                    hasNewReports = false
+                    return@addSnapshotListener
+                }
+
+                val lastChecked = sharedPrefs.getLong("last_checked", 0L)
+                val hasNewerReport = snapshots?.documents?.any { doc ->
+                    val timestamp = doc.getTimestamp("timestamp")?.toDate()?.time ?: 0L
+                    timestamp > lastChecked
+                } ?: false
+
+                hasNewReports = hasNewerReport
+            }
+
+        onDispose {
+            listenerRegistration.remove()
+        }
+    }
+
     Column {
-        // A thin line to separate the bar from the content above it
-        HorizontalDivider(
-            thickness = 0.5.dp,
-            color = Color.LightGray.copy(alpha = 0.5f)
-        )
+        HorizontalDivider(thickness = 0.5.dp, color = Color.LightGray.copy(alpha = 0.5f))
 
         NavigationBar(
             modifier = Modifier.height(90.dp),
-            containerColor = Color.White,       // Forces white background
-            tonalElevation = 0.dp               // Removes the Material 3 gray/purple tint
+            containerColor = Color.White,
+            tonalElevation = 0.dp
         ) {
-            // Dashboard
-            NavigationBarItem(
-                selected = currentRoute == "admin",
-                onClick = {
-                    if (currentRoute != "admin") {
-                        navController?.navigate("admin") {
-                            // Avoid multiple copies of the same screen on the stack
-                            popUpTo("admin") { saveState = true }
-                            launchSingleTop = true
+            val navItems = listOf(
+                Triple("dashboard", "Dashboard", R.drawable.pic_dashboard),
+                Triple("reports", "Reports", R.drawable.pic_ticket),
+                Triple("map", "Map", R.drawable.pic_maps),
+                Triple("setting", "Settings", R.drawable.pic_cog1)
+            )
+
+            navItems.forEach { (route, label, iconRes) ->
+                NavigationBarItem(
+                    selected = activeRoute == route,
+                    onClick = {
+                        if (route == "reports") hasNewReports = false
+
+                        if (activeRoute != route) {
+                            navController?.navigate(route) {
+                                // Added null-safety for the graph to prevent crashes
+                                navController.graph.startDestinationRoute?.let { start ->
+                                    popUpTo(start) { saveState = true }
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
                         }
-                    }
-                },
-                label = { Text("Dashboard", fontSize = 14.sp) },
-                icon = { Icon(painterResource(id = R.drawable.pic_dashboard),
-                    contentDescription = "Dashboard",
-                    modifier = Modifier.size(25.dp))},
-                    colors = itemColors
-            )
-
-            // Reports
-            NavigationBarItem(
-                    selected = currentRoute == "reports",
-            onClick = {
-                // This will work once you create a "users" screen
-                if (currentRoute != "reports") {
-                    navController?.navigate("reports"){
-                        popUpTo("reports") { saveState = true}
-                        launchSingleTop = true
-                    }
-                }
-            },
-            label = { Text("Reports", fontSize = 14.sp) },
-            icon = { Icon(painterResource(id = R.drawable.pic_ticket),
-                contentDescription = "Reports",
-                modifier = Modifier.size(25.dp))},
-                colors = itemColors
-            )
-
-            // Map
-            NavigationBarItem(
-                selected = currentRoute == "map",
-                onClick = {
-                    if (currentRoute != "map") {
-                        navController?.navigate("map") {
-                            popUpTo("map") { saveState = true }
-                            launchSingleTop = true
+                    },
+                    label = { Text(label, fontSize = 14.sp) },
+                    icon = {
+                        if (route == "reports") {
+                            BadgedBox(
+                                badge = {
+                                    if (hasNewReports) {
+                                        Badge(
+                                            containerColor = Color.Red,
+                                            modifier = Modifier.size(10.dp).offset(x = 5.dp, y = (-4).dp)
+                                        )
+                                    }
+                                }
+                            ) {
+                                NavigationIcon(iconRes)
+                            }
+                        } else {
+                            NavigationIcon(iconRes)
                         }
-                    }
-                },
-                label = { Text("Map", fontSize = 14.sp) },
-                icon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.pic_maps),
-                        contentDescription = "Map",
-                        modifier = Modifier.size(25.dp))},
-                        colors = itemColors
-            )
-
-            //Setting
-            NavigationBarItem(
-                selected = currentRoute == "setting",
-                onClick = {
-                    // Clears the admin stack and goes back to the home/greeting screen
-                    navController?.navigate("setting") {
-                        popUpTo("setting") { inclusive = true }
-                        launchSingleTop = true
-                    }
-                },
-                label = { Text("Settings", fontSize = 14.sp)},
-                icon = { Icon(painterResource(id = R.drawable.pic_cog1),
-                    contentDescription = "Setting",
-                    modifier = Modifier.size(25.dp))},
+                    },
                     colors = itemColors
-            )
+                )
+            }
         }
     }
+}
+
+@Composable
+fun NavigationIcon(id: Int) {
+    Icon(
+        painter = painterResource(id = id),
+        contentDescription = null,
+        modifier = Modifier.size(25.dp)
+    )
 }
